@@ -15,6 +15,7 @@ env/
 # Environment variables
 .env
 
+
 # Airflow
 airflow/logs/*
 !airflow/logs/.gitkeep

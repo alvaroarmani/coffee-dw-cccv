@@ -9,4 +9,43 @@
 # - volumes
 # - network do projeto
 
-services: {}
+services:
+  postgres:
+    image: postgres:16
+    container_name: coffee_dw_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d
+    networks:
+      - coffee_dw_network
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: coffee_dw_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - coffee_dw_network
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+networks:
+  coffee_dw_network:
+    driver: bridge
