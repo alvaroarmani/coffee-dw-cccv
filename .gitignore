@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+
+# Airflow
+airflow/logs/*
+!airflow/logs/.gitkeep
+airflow/plugins/__pycache__/
+
+# dbt
+dbt/coffee_dw/target/
+dbt/coffee_dw/dbt_packages/
+dbt/coffee_dw/logs/
+
+# Docker
+*.pid
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Data files
+*.csv
+*.xlsx
+*.parquet
+*.json
+*.db
