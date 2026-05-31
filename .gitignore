@@ -20,6 +20,9 @@ env/
 airflow/logs/*
 !airflow/logs/.gitkeep
 airflow/plugins/__pycache__/
+airflow/dags/__pycache__/
+airflow/config/airflow.cfg
+airflow/config/webserver_config.py
 
 # dbt
 dbt/coffee_dw/target/

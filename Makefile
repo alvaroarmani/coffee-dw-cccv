@@ -1,15 +1,33 @@
-.PHONY: help up down stop ps logs logs-postgres logs-pgadmin test
+.PHONY: help up down stop restart ps logs logs-postgres logs-pgadmin logs-airflow-webserver logs-airflow-scheduler build-airflow init-airflow test test-local test-airflow pipeline
 
 help:
 	@echo "Comandos disponíveis:"
-	@echo "  make up              Sobe os containers Docker"
-	@echo "  make down            Derruba os containers Docker"
-	@echo "  make stop            Para os containers sem remover"
-	@echo "  make ps              Lista os containers"
-	@echo "  make logs            Mostra logs de todos os serviços"
-	@echo "  make logs-postgres   Mostra logs do PostgreSQL"
-	@echo "  make logs-pgadmin    Mostra logs do pgAdmin"
-	@echo "  make test            Roda os testes Python"
+	@echo ""
+	@echo "Infraestrutura Docker:"
+	@echo "  make up                         Sobe todos os containers"
+	@echo "  make down                       Derruba os containers sem apagar volumes"
+	@echo "  make stop                       Para os containers sem remover"
+	@echo "  make restart                    Reinicia todos os containers"
+	@echo "  make ps                         Lista containers do projeto"
+	@echo ""
+	@echo "Logs:"
+	@echo "  make logs                       Mostra logs de todos os serviços"
+	@echo "  make logs-postgres              Mostra logs do PostgreSQL do DW"
+	@echo "  make logs-pgadmin               Mostra logs do pgAdmin"
+	@echo "  make logs-airflow-webserver     Mostra logs do Airflow Webserver"
+	@echo "  make logs-airflow-scheduler     Mostra logs do Airflow Scheduler"
+	@echo ""
+	@echo "Airflow:"
+	@echo "  make build-airflow              Faz build da imagem customizada do Airflow"
+	@echo "  make init-airflow               Inicializa banco interno e usuário do Airflow"
+	@echo ""
+	@echo "Pipeline:"
+	@echo "  make pipeline                   Executa pipeline local CCCV"
+	@echo ""
+	@echo "Testes:"
+	@echo "  make test-local                 Roda testes locais sem Airflow"
+	@echo "  make test-airflow               Roda testes da DAG dentro do container Airflow"
+	@echo "  make test                       Roda testes locais e testes Airflow"
 
 up:
 	docker compose up -d
@@ -19,6 +37,10 @@ down:
 
 stop:
 	docker compose stop
+
+restart:
+	docker compose down
+	docker compose up -d
 
 ps:
 	docker compose ps
@@ -32,5 +54,25 @@ logs-postgres:
 logs-pgadmin:
 	docker compose logs pgadmin
 
-test:
-	pytest
+logs-airflow-webserver:
+	docker compose logs airflow-webserver
+
+logs-airflow-scheduler:
+	docker compose logs airflow-scheduler
+
+build-airflow:
+	docker compose build airflow-init airflow-webserver airflow-scheduler
+
+init-airflow:
+	docker compose up airflow-init
+
+pipeline:
+	python -m src.run_cccv_pipeline
+
+test-local:
+	python -m pytest tests/extractors tests/loaders
+
+test-airflow:
+	docker compose exec airflow-scheduler python -m pytest /opt/airflow/project/tests/airflow/test_cccv_dag.py
+
+test: test-local test-airflow
