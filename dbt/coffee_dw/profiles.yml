@@ -1,5 +1,5 @@
 coffee_dw:
-  target: dev
+  target: "{{ env_var('DBT_TARGET', 'dev') }}"
   outputs:
     dev:
       type: postgres
@@ -7,6 +7,16 @@ coffee_dw:
       user: coffee_user
       password: coffee_password
       port: 5433
+      dbname: coffee_dw
+      schema: silver
+      threads: 4
+
+    airflow:
+      type: postgres
+      host: postgres
+      user: coffee_user
+      password: coffee_password
+      port: 5432
       dbname: coffee_dw
       schema: silver
       threads: 4

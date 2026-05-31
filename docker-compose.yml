@@ -67,6 +67,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       CCCV_COTACAO_URL: ${CCCV_COTACAO_URL}
       PYTHONPATH: /opt/airflow/project
+      DBT_TARGET: airflow
     user: "${AIRFLOW_UID}:0"
     volumes:
       - ./airflow/dags:/opt/airflow/dags
@@ -74,6 +75,7 @@ services:
       - ./airflow/plugins:/opt/airflow/plugins
       - ./airflow/config:/opt/airflow/config
       - ./src:/opt/airflow/project/src
+      - ./dbt:/opt/airflow/project/dbt
     command: >
       bash -c "airflow db migrate &&
       airflow users create
@@ -106,6 +108,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       CCCV_COTACAO_URL: ${CCCV_COTACAO_URL}
       PYTHONPATH: /opt/airflow/project
+      DBT_TARGET: airflow
     user: "${AIRFLOW_UID}:0"
     volumes:
       - ./airflow/dags:/opt/airflow/dags
@@ -113,6 +116,7 @@ services:
       - ./airflow/plugins:/opt/airflow/plugins
       - ./airflow/config:/opt/airflow/config
       - ./src:/opt/airflow/project/src
+      - ./dbt:/opt/airflow/project/dbt
     ports:
       - "8080:8080"
     command: airflow webserver
@@ -139,6 +143,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       CCCV_COTACAO_URL: ${CCCV_COTACAO_URL}
       PYTHONPATH: /opt/airflow/project
+      DBT_TARGET: airflow
     user: "${AIRFLOW_UID}:0"
     volumes:
       - ./airflow/dags:/opt/airflow/dags
@@ -147,6 +152,7 @@ services:
       - ./airflow/config:/opt/airflow/config
       - ./src:/opt/airflow/project/src
       - ./tests:/opt/airflow/project/tests
+      - ./dbt:/opt/airflow/project/dbt
     command: airflow scheduler
     networks:
       - coffee_dw_network
