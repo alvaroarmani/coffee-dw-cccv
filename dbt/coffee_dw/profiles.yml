@@ -20,3 +20,13 @@ coffee_dw:
       dbname: coffee_dw
       schema: silver
       threads: 4
+
+    ci:
+      type: postgres
+      host: localhost
+      user: coffee_user
+      password: coffee_password
+      port: 5432
+      dbname: coffee_dw
+      schema: silver
+      threads: 4
