@@ -1047,6 +1047,8 @@ silver_gold
 - [Arquitetura do projeto](docs/architecture.md)
 - [Guia de execução local](docs/setup.md)
 - [Queries analíticas](docs/analytics_queries.md)
+- [Decisões técnicas](docs/technical_decisions.md)
+- [Checklist de portfólio](docs/portfolio_checklist.md)
 
 ## Roadmap
 
@@ -1116,5 +1118,5 @@ silver_gold
 Fase atual:
 
 ```text
-Fase 8 — Documentação final e portfólio
+Fase 11 — Fechamento final para portfólio
 ```
