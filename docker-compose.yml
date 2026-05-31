@@ -1,14 +1,3 @@
-# docker-compose.yml
-#
-# Projeto: Coffee DW CCCV
-#
-# Este arquivo será preenchido na Fase 2.
-# Na próxima fase, adicionaremos:
-# - PostgreSQL
-# - pgAdmin
-# - volumes
-# - network do projeto
-
 services:
   postgres:
     image: postgres:16
