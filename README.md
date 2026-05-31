@@ -1042,6 +1042,12 @@ silver_silver
 silver_gold
 ```
 
+## Documentação complementar
+
+- [Arquitetura do projeto](docs/architecture.md)
+- [Guia de execução local](docs/setup.md)
+- [Queries analíticas](docs/analytics_queries.md)
+
 ## Roadmap
 
 ### Fase 1 — Estrutura inicial
@@ -1110,5 +1116,5 @@ silver_gold
 Fase atual:
 
 ```text
-Fase 6 — dbt
+Fase 8 — Documentação final e portfólio
 ```
