@@ -1,4 +1,4 @@
-.PHONY: help up down stop restart ps logs logs-postgres logs-pgadmin logs-airflow-webserver logs-airflow-scheduler build-airflow init-airflow test test-local test-airflow pipeline
+.PHONY: help up down stop restart ps logs logs-postgres logs-pgadmin logs-airflow-webserver logs-airflow-scheduler build-airflow init-airflow pipeline test test-local test-airflow dbt-debug dbt-run dbt-test dbt-build dbt-docs-generate
 
 help:
 	@echo "Comandos disponíveis:"
@@ -23,6 +23,13 @@ help:
 	@echo ""
 	@echo "Pipeline:"
 	@echo "  make pipeline                   Executa pipeline local CCCV"
+	@echo ""
+	@echo "dbt:"
+	@echo "  make dbt-debug                  Testa conexão e configuração dbt"
+	@echo "  make dbt-run                    Executa modelos dbt"
+	@echo "  make dbt-test                   Executa testes dbt"
+	@echo "  make dbt-build                  Executa dbt run + dbt test"
+	@echo "  make dbt-docs-generate          Gera documentação dbt"
 	@echo ""
 	@echo "Testes:"
 	@echo "  make test-local                 Roda testes locais sem Airflow"
@@ -76,3 +83,20 @@ test-airflow:
 	docker compose exec airflow-scheduler python -m pytest /opt/airflow/project/tests/airflow/test_cccv_dag.py
 
 test: test-local test-airflow
+
+dbt-debug:
+	dbt debug --project-dir dbt/coffee_dw --profiles-dir dbt/coffee_dw
+
+dbt-run:
+	dbt run --project-dir dbt/coffee_dw --profiles-dir dbt/coffee_dw
+
+dbt-test:
+	dbt test --project-dir dbt/coffee_dw --profiles-dir dbt/coffee_dw
+
+dbt-build:
+	dbt run --project-dir dbt/coffee_dw --profiles-dir dbt/coffee_dw
+	dbt test --project-dir dbt/coffee_dw --profiles-dir dbt/coffee_dw
+
+dbt-docs-generate:
+	dbt docs generate --project-dir dbt/coffee_dw --profiles-dir dbt/coffee_dw
+	

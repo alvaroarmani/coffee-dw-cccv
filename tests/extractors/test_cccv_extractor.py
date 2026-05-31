@@ -9,25 +9,34 @@ from src.extractors.cccv_extractor import (
 
 def test_parse_brazilian_decimal_with_thousand_separator():
     result = parse_brazilian_decimal("1.013,00")
+
     assert result == Decimal("1013.00")
 
 
 def test_parse_brazilian_decimal_without_thousand_separator():
     result = parse_brazilian_decimal("984,00")
+
     assert result == Decimal("984.00")
 
 
 def test_parse_brazilian_decimal_with_empty_value():
+    result = parse_brazilian_decimal("-")
+
+    assert result is None
+
+
+def test_parse_brazilian_decimal_with_old_empty_value():
     result = parse_brazilian_decimal("---")
+
     assert result is None
 
 
 def test_extract_reference_month_year():
-    text = "Cotação do café referente ao mês de Março de 2026"
+    text = "Cotação do café referente ao mês de Maio de 2026"
 
     month, year = extract_reference_month_year(text)
 
-    assert month == 3
+    assert month == 5
     assert year == 2026
 
 
@@ -35,13 +44,10 @@ def test_parse_cccv_current_prices_from_sample_html():
     sample_html = """
     <html>
         <body>
-            <h5>Cotação do café referente ao mês de Março de 2026</h5>
-            <p>2 1.710,00 1.358,00 984,00</p>
-            <p>3 1.708,00 1.365,00 991,00</p>
-            <p>4 1.716,00 1.373,00 998,00</p>
-            <p>5 1.747,00 1.390,00 1.013,00</p>
-            <p>6 1.760,00 1.402,00 1.015,00</p>
-            <p>7 ---</p>
+            <h5>Cotação do café referente ao mês de Maio de 2026</h5>
+            <p>4 1.643,00 1.130,00 - - 873,00 -</p>
+            <p>5 1.653,00 1.175,00 - - 869,00 -</p>
+            <p>6 1.629,00 1.140,00 - - 865,00 -</p>
         </body>
     </html>
     """
@@ -51,14 +57,59 @@ def test_parse_cccv_current_prices_from_sample_html():
         source_url="https://www.cccv.org.br/cotacao/",
     )
 
-    assert len(records) == 15
+    assert len(records) == 9
 
-    first_record = records[0]
-    assert first_record["price_date"] == "2026-03-02"
-    assert first_record["coffee_type"] == "arabica_dura"
-    assert first_record["price_brl"] == Decimal("1710.00")
+    first_day_records = [
+        record for record in records if record["price_date"] == "2026-05-04"
+    ]
 
-    conilon_record = records[2]
-    assert conilon_record["price_date"] == "2026-03-02"
-    assert conilon_record["coffee_type"] == "conilon"
-    assert conilon_record["price_brl"] == Decimal("984.00")
+    prices_by_type_and_harvest = {
+        (record["coffee_type"], record["harvest_year"]): record["price_brl"]
+        for record in first_day_records
+    }
+
+    assert prices_by_type_and_harvest[("arabica_dura", "2025/2026")] == Decimal(
+        "1643.00"
+    )
+    assert prices_by_type_and_harvest[("arabica_rio", "2025/2026")] == Decimal(
+        "1130.00"
+    )
+    assert prices_by_type_and_harvest[("conilon", "2025/2026")] == Decimal("873.00")
+
+
+def test_parse_cccv_current_prices_with_future_harvest_values():
+    sample_html = """
+    <html>
+        <body>
+            <h5>Cotação do café referente ao mês de Maio de 2026</h5>
+            <p>20 1.600,00 1.100,00 1.500,00 1.050,00 850,00 830,00</p>
+        </body>
+    </html>
+    """
+
+    records = parse_cccv_current_prices(
+        html=sample_html,
+        source_url="https://www.cccv.org.br/cotacao/",
+    )
+
+    assert len(records) == 6
+
+    prices_by_type_and_harvest = {
+        (record["coffee_type"], record["harvest_year"]): record["price_brl"]
+        for record in records
+    }
+
+    assert prices_by_type_and_harvest[("arabica_dura", "2025/2026")] == Decimal(
+        "1600.00"
+    )
+    assert prices_by_type_and_harvest[("arabica_rio", "2025/2026")] == Decimal(
+        "1100.00"
+    )
+    assert prices_by_type_and_harvest[("arabica_dura", "2026/2027")] == Decimal(
+        "1500.00"
+    )
+    assert prices_by_type_and_harvest[("arabica_rio", "2026/2027")] == Decimal(
+        "1050.00"
+    )
+    assert prices_by_type_and_harvest[("conilon", "2025/2026")] == Decimal("850.00")
+    assert prices_by_type_and_harvest[("conilon", "2026/2027")] == Decimal("830.00")

@@ -1,0 +1,40 @@
+version: 2
+
+sources:
+  - name: bronze
+    database: coffee_dw
+    schema: bronze
+    tables:
+      - name: raw_cccv_daily_prices
+        description: "Dados brutos de cotações diárias de café extraídos da CCCV."
+        columns:
+          - name: id
+            description: "Identificador técnico do registro na camada Bronze."
+            tests:
+              - not_null
+              - unique
+
+          - name: price_date
+            description: "Data da cotação."
+            tests:
+              - not_null
+
+          - name: coffee_type
+            description: "Tipo de café cotado."
+            tests:
+              - not_null
+              - accepted_values:
+                  values:
+                    - arabica_dura
+                    - arabica_rio
+                    - conilon
+
+          - name: harvest_year
+            description: "Safra da cotação, por exemplo 2025/2026 ou 2026/2027."
+            tests:
+              - not_null
+
+          - name: price_brl
+            description: "Preço da cotação em reais."
+            tests:
+              - not_null

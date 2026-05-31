@@ -1,0 +1,47 @@
+version: 2
+
+models:
+  - name: mart_conilon_daily_prices
+    description: "Mart Gold com preços diários do café Conilon por safra."
+    columns:
+      - name: price_date
+        tests:
+          - not_null
+
+      - name: harvest_year
+        tests:
+          - not_null
+
+      - name: price_brl
+        tests:
+          - not_null
+
+  - name: mart_coffee_monthly_summary
+    description: "Resumo mensal de preços por tipo de café e safra."
+    columns:
+      - name: reference_month
+        tests:
+          - not_null
+
+      - name: coffee_type
+        tests:
+          - not_null
+
+      - name: harvest_year
+        tests:
+          - not_null
+
+      - name: avg_price_brl
+        tests:
+          - not_null
+
+  - name: mart_harvest_comparison
+    description: "Comparação diária entre preços das safras 2025/2026 e 2026/2027 por tipo de café."
+    columns:
+      - name: price_date
+        tests:
+          - not_null
+
+      - name: coffee_type
+        tests:
+          - not_null

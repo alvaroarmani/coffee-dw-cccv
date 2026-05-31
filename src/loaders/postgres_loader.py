@@ -72,6 +72,7 @@ def load_raw_cccv_daily_prices(
             price_date,
             coffee_type,
             coffee_description,
+            harvest_year,
             price_brl,
             source_url,
             extracted_at
@@ -80,18 +81,18 @@ def load_raw_cccv_daily_prices(
             :price_date,
             :coffee_type,
             :coffee_description,
+            :harvest_year,
             :price_brl,
             :source_url,
             :extracted_at
         )
-        ON CONFLICT (price_date, coffee_type, source_url)
+        ON CONFLICT (price_date, coffee_type, harvest_year, source_url)
         DO UPDATE SET
             coffee_description = EXCLUDED.coffee_description,
             price_brl = EXCLUDED.price_brl,
             extracted_at = EXCLUDED.extracted_at,
             loaded_at = CURRENT_TIMESTAMP
         """)
-
     with engine.begin() as connection:
         result = connection.execute(insert_sql, prepared_records)
 

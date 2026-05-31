@@ -1,0 +1,12 @@
+coffee_dw:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: 127.0.0.1
+      user: coffee_user
+      password: coffee_password
+      port: 5433
+      dbname: coffee_dw
+      schema: silver
+      threads: 4
